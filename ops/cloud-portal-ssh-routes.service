@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync UCcloud browser SSH routes
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /opt/cloud-portal/ops/sync-browser-ssh-routes.py

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VM 접속 · UCcloud</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="/assets/brand/favicon-v1.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/assets/brand/icon.svg?v=1" type="image/svg+xml" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/brand/icon-180-v1.png" sizes="180x180">
+  <link rel="stylesheet" href="/assets/vendor/xterm/xterm-6.0.0.css">
+  <link rel="stylesheet" href="/assets/terminal.css?v=software-add-1">
+</head>
+<body>
+  <header class="bar"><a class="brand" href="/">UCcloud</a><span id="vm-name">VM 접속</span><a class="guide-link" href="/guide/funnel" target="_blank" rel="noopener noreferrer">외부 공개</a><a class="back" href="/">내 VM</a></header>
+  <main>
+    <div class="heading"><div><h1>VM 접속</h1><p id="status" role="status" aria-live="polite">연결 정보를 확인하는 중입니다.</p></div><div class="heading-actions"><a id="tailscale-login" class="hidden" target="_blank" rel="noopener noreferrer">Tailscale 로그인</a><button id="copy" class="hidden" type="button">복사</button><button id="read-text" class="hidden" type="button">화면 글자</button><button id="retry-start" class="hidden" type="button">다시 켜기</button><button id="shortcuts" type="button">단축키</button></div></div>
+    <form id="connect-form" class="credentials hidden"><label>VM 접속 ID<input id="vm-user" autocomplete="username" autocapitalize="none" spellcheck="false" required></label><label>VM 비밀번호<span class="password-entry"><input id="vm-password" type="password" autocomplete="off" required><button id="vm-password-toggle" type="button" aria-label="비밀번호 보기" aria-pressed="false">보기</button></span></label><button id="connect" type="submit">연결</button></form>
+    <div id="software-status" class="software-status hidden"><div><span id="software-message" role="status" aria-live="polite"></span> <button id="software-guide" type="button" class="hidden">설치 안내</button></div><p id="software-time"></p></div>
+    <div id="terminal" class="hidden" aria-label="VM 터미널"></div>
+    <p id="terminal-help" class="help hidden"></p>
+    <section id="publish-panel" class="publish-panel hidden" aria-labelledby="publish-title"><h2 id="publish-title">웹사이트 공개하기</h2><p class="help">서버에서 웹사이트를 먼저 켜세요. 공개하면 주소를 아는 누구나 볼 수 있습니다.</p><form id="publish-form"><label for="publish-port">웹사이트 포트</label><input id="publish-port" type="number" min="1" max="65535" inputmode="numeric" placeholder="예: 8080" required><button id="publish-start" type="submit">공개하기</button><button id="publish-refresh" type="button">상태 확인</button><button id="publish-stop" type="button" hidden>공개 끄기</button></form><p id="publish-message" role="status" aria-live="polite"></p><p id="publish-elapsed" class="help"></p><div id="publish-result" hidden><label class="help" for="publish-address">인터넷 주소</label><div class="publish-address"><input id="publish-address" readonly aria-label="인터넷 주소"><button id="publish-copy" type="button">주소 복사</button><a id="publish-link" target="_blank" rel="noopener noreferrer">사이트 열기</a></div></div></section>
+    <section id="file-panel" class="file-panel hidden" aria-labelledby="file-title"><h2 id="file-title">파일 올리기</h2><div id="file-drop" class="file-drop"><span>여기에 파일을 끌어다 놓으세요.</span><button id="file-choose" type="button">파일 선택</button><input id="file-picker" type="file" multiple hidden></div><p class="help">내 서버의 uploads 폴더에 저장됩니다. 파일 하나당 100MB까지.</p><progress id="file-progress" max="100" value="0" hidden aria-label="파일 전송 진행률"></progress><div class="file-result"><p id="file-feedback" role="status" aria-live="polite"></p><button id="file-cancel" type="button" hidden>취소</button></div></section>
+    <div class="recovery-console"><button id="vnc" class="hidden" type="button">화면 콘솔</button></div>
+  </main>
+  <dialog id="shortcut-dialog" aria-labelledby="shortcut-title"><form method="dialog"><div class="shortcut-head"><h2 id="shortcut-title">단축키</h2><button type="submit" aria-label="닫기">×</button></div><p>바꿀 항목을 누른 뒤 원하는 키를 누르세요.</p><div class="shortcut-row"><span>복사</span><button type="button" data-shortcut="copy"></button></div><div class="shortcut-row"><span>붙여넣기</span><button type="button" data-shortcut="paste"></button></div><p id="shortcut-status" role="status" aria-live="polite"></p><div class="shortcut-bottom"><button id="shortcut-reset" type="button">기본값</button><button type="submit">닫기</button></div></form></dialog>
+  <dialog id="terminal-text-dialog" aria-labelledby="terminal-text-title"><div class="text-dialog-head"><h2 id="terminal-text-title">화면 글자</h2><button id="terminal-text-close" type="button">닫기</button></div><pre id="terminal-text" tabindex="0"></pre><div class="text-dialog-bottom"><span id="terminal-text-status" role="status" aria-live="polite"></span><button id="terminal-text-copy" type="button">전체 복사</button></div></dialog>
+  <script src="/assets/vendor/xterm/xterm-6.0.0.js" defer></script>
+  <script src="/assets/vendor/xterm/addon-fit-0.11.0.js" defer></script>
+  <script src="/assets/vendor/xterm/addon-web-links-0.12.0.js" defer></script>
+  <script src="/assets/terminal-files.js?v=files-1" defer></script>
+  <script src="/assets/terminal-publish.js?v=publish-1" defer></script>
+  <script src="/assets/terminal-agent.js?v=agent-1" defer></script>
+  <script src="/assets/terminal-software.js?v=additional-1" defer></script>
+  <script src="/assets/terminal.js?v=install-state-2" defer></script>
+</body>
+</html>

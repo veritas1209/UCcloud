@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>웹사이트 외부 공개 방법 · UCcloud</title>
+  <meta name="description" content="내 서버에서 만든 웹사이트를 인터넷에 공개하세요.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://comsv-03.tail5819db.ts.net/guide/funnel">
+  <link rel="icon" href="/assets/brand/favicon-v1.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/assets/brand/icon.svg?v=1" type="image/svg+xml" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/brand/icon-180-v1.png" sizes="180x180">
+  <link rel="manifest" href="/assets/brand/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="UCcloud">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="웹사이트 외부 공개 방법 · UCcloud">
+  <meta property="og:description" content="내 서버에서 만든 웹사이트를 인터넷에 공개하세요.">
+  <meta property="og:url" content="https://comsv-03.tail5819db.ts.net/guide/funnel">
+  <meta property="og:image" content="https://comsv-03.tail5819db.ts.net/assets/brand/share-v1.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="파란 구름 아이콘과 UCcloud">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="웹사이트 외부 공개 방법 · UCcloud">
+  <meta name="twitter:description" content="내 서버에서 만든 웹사이트를 인터넷에 공개하세요.">
+  <meta name="twitter:image" content="https://comsv-03.tail5819db.ts.net/assets/brand/share-v1.png">
+  <meta name="twitter:image:alt" content="파란 구름 아이콘과 UCcloud">
+  <link rel="stylesheet" href="/assets/styles.css?v=terminal-1">
+  <link rel="stylesheet" href="/assets/funnel-guide.css?v=pc-guide-1">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/">UCcloud</a><a class="topbar-guide" href="/">포털로 돌아가기</a></header>
+  <main class="guide-layout">
+    <nav class="guide-nav" aria-label="안내 목차">
+      <span class="guide-nav-label">외부 공개 안내</span>
+      <a href="#quick-connect">1. 서버 접속</a>
+      <a href="#quick-run">2. 사이트 켜기</a>
+      <a href="#quick-publish">3. 공개하기</a>
+    </nav>
+    <div class="guide-content">
+      <div class="guide-intro">
+        <p class="eyebrow">따라 하기</p>
+        <h1>만든 웹사이트를<br>웹에 공개하기</h1>
+        <p>내 서버에서 만든 웹사이트의 인터넷 주소를 만드는 방법입니다.</p>
+        <div class="guide-callout"><strong>준비물</strong><span>UCcloud에서 만든 서버. Tailscale 가입이나 로그인은 필요 없습니다.</span></div>
+      </div>
+
+      <section id="quick-connect" class="guide-step"><div class="step-number">01</div><div class="step-body"><h2>내 서버 접속하기</h2><figure class="guide-photo"><a href="/assets/guide/pc-vm.png" target="_blank" rel="noopener noreferrer" title="사진 크게 보기"><img src="/assets/guide/pc-vm.png?v=1" width="1046" height="73" alt="내 VM 목록의 접속 버튼" loading="lazy"></a><figcaption>내 VM에서 접속을 누르세요. 사진을 누르면 크게 볼 수 있습니다.</figcaption></figure><p><b>내 VM → 접속</b>을 누르고 서버 비밀번호를 넣으세요.</p><figure class="guide-photo"><a href="/assets/guide/pc-connect.png" target="_blank" rel="noopener noreferrer" title="사진 크게 보기"><img src="/assets/guide/pc-connect.png?v=1" width="1200" height="263" alt="UCcloud 접속 화면에서 VM 비밀번호를 입력하고 연결하는 모습" loading="lazy"></a><figcaption>PC의 서버 접속 화면</figcaption></figure><p>파일을 보내려면 접속 화면 아래 <b>파일 올리기</b>에 끌어다 놓으세요. 서버의 <code>uploads</code> 폴더에 저장됩니다.</p><figure class="guide-photo"><a href="/assets/guide/pc-files.png" target="_blank" rel="noopener noreferrer" title="사진 크게 보기"><img src="/assets/guide/pc-files.png?v=1" width="1144" height="257" alt="접속 화면의 파일 올리기 영역과 전송 완료 메시지" loading="lazy"></a><figcaption>파일 올리기 · 실행은 별도로 해야 합니다.</figcaption></figure></div></section>
+      <section id="quick-run" class="guide-step"><div class="step-number">02</div><div class="step-body"><h2>웹사이트 켜기</h2><p>서버에서 만든 웹사이트를 켜세요. 사이트가 사용하는 포트 번호를 확인하세요. 예: <code>localhost:8080</code>이면 <b>8080</b>입니다.</p><p>파일을 올리는 것만으로 사이트가 켜지지는 않습니다. 실행 방법을 모르면 사이트를 만든 AI에게 물어보세요.</p><p><a href="#keep-running-help">접속 창을 닫아도 사이트를 계속 켜두는 방법</a></p></div></section>
+      <section id="quick-publish" class="guide-step"><div class="step-number">03</div><div class="step-body"><h2>공개하기 누르기</h2><p>접속 화면 아래 <b>웹사이트 공개하기</b>에서 포트 번호를 적고 <b>공개하기</b>를 누르세요. 설정이 끝날 때까지 이 창을 열어 두세요.</p><p>나온 인터넷 주소를 복사해서 공유하면 끝입니다. 주소를 아는 누구나 볼 수 있습니다.</p><p>처음에는 주소가 연결되기까지 최대 10분 걸릴 수 있습니다. 사이트 상태는 <b>내 VM → 관리 → 사이트 상태</b>에서 확인하세요. 공개를 중단하려면 <b>공개 끄기</b>를 누르세요.</p><figure class="guide-photo"><a href="/assets/guide/pc-publish.png" target="_blank" rel="noopener noreferrer" title="사진 크게 보기"><img src="/assets/guide/pc-publish.png?v=1" width="1144" height="290" alt="웹사이트 포트와 공개하기 버튼, 생성된 인터넷 주소" loading="lazy"></a><figcaption>공개하기 · 사진의 숫자와 주소는 예시입니다. 내 사이트의 포트 번호를 입력하세요.</figcaption></figure></div></section>
+
+      <section class="guide-extra"><h2>사이트를 계속 켜두기</h2>
+          <details id="keep-running-help" class="keep-running"><summary>사이트를 계속 켜두려면</summary><div class="keep-running-body">
+            <p>사이트 파일이 있는 곳에서, 사이트를 켤 때 쓰는 명령을 적으세요. 모르면 사이트를 만든 AI에게 물어보세요. 비밀번호는 넣지 마세요.</p>
+            <label class="port-label" for="site-start">사이트를 켜는 명령</label>
+            <input id="site-start" class="start-input" type="text" maxlength="200" placeholder="예: npm start" autocomplete="off" autocapitalize="none" spellcheck="false">
+            <div class="start-command-actions"><button class="guide-copy" id="copy-keep-running" data-copy-command="keep-running-command" type="button" disabled aria-live="polite">명령 복사</button><details class="start-command-preview"><summary>명령 보기</summary><pre tabindex="0" aria-label="자동 실행 명령"><code id="keep-running-command">실행 명령을 적으세요</code></pre></details></div>
+            <p>복사해 접속 창에 붙여넣고 Enter를 누르세요. 비밀번호를 물으면 VM 비밀번호를 넣으세요. 이후에는 접속 창을 닫거나 VM을 다시 켜도 사이트가 자동으로 시작됩니다.</p>
+          </div></details>
+      </section>
+    </div>
+  </main>
+  <script src="/assets/funnel-guide.js?v=pc-guide-1" defer></script>
+</body>
+</html>

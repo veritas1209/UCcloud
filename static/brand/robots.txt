@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /api/
+Disallow: /terminal
+Disallow: /reset-password
+Disallow: /assets/*.html
+Disallow: /ucconsole/
+
+Sitemap: https://comsv-03.tail5819db.ts.net/sitemap.xml

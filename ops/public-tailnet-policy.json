@@ -1,0 +1,7 @@
+{
+  "tagOwners": {"tag:uccloud-public": ["autogroup:admin"]},
+  "acls": [],
+  "grants": [],
+  "ssh": [],
+  "nodeAttrs": [{"target": ["tag:uccloud-public"], "attr": ["funnel"]}]
+}

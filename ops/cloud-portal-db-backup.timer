@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily UCcloud portal database backup
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=15m
+Persistent=true
+Unit=cloud-portal-db-backup.service
+
+[Install]
+WantedBy=timers.target

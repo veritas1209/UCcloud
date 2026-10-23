@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#fff"/>
+  <g transform="translate(300 225) scale(2.5)">
+    <path d="M20 46a11 11 0 0 1-1-22 14 14 0 0 1 27 2 10 10 0 0 1-1 20Z" fill="none" stroke="#2467c9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="496" y="327" font-family="Segoe UI, Malgun Gothic, sans-serif" font-size="100" font-weight="700" letter-spacing="-4" fill="#1f2429">UCcloud</text>
+  <text x="502" y="390" font-family="Malgun Gothic, Segoe UI, sans-serif" font-size="30" fill="#69737d">팀 서버를 만들고 사용하세요.</text>
+</svg>

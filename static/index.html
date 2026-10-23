@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UCcloud</title>
+  <meta name="description" content="팀 서버를 만들고 사용하세요.">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="canonical" href="https://comsv-03.tail5819db.ts.net/">
+  <link rel="icon" href="/assets/brand/favicon-v1.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/assets/brand/icon.svg?v=1" type="image/svg+xml" sizes="any">
+  <link rel="apple-touch-icon" href="/assets/brand/icon-180-v1.png" sizes="180x180">
+  <link rel="manifest" href="/assets/brand/site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="UCcloud">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="UCcloud">
+  <meta property="og:description" content="팀 서버를 만들고 사용하세요.">
+  <meta property="og:url" content="https://comsv-03.tail5819db.ts.net/">
+  <meta property="og:image" content="https://comsv-03.tail5819db.ts.net/assets/brand/share-v1.png">
+  <meta property="og:image:secure_url" content="https://comsv-03.tail5819db.ts.net/assets/brand/share-v1.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="파란 구름 아이콘과 UCcloud. 팀 서버를 만들고 사용하세요.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="UCcloud">
+  <meta name="twitter:description" content="팀 서버를 만들고 사용하세요.">
+  <meta name="twitter:image" content="https://comsv-03.tail5819db.ts.net/assets/brand/share-v1.png">
+  <meta name="twitter:image:alt" content="파란 구름 아이콘과 UCcloud">
+  <link rel="stylesheet" href="/assets/styles.css?v=vm-access-2">
+  <link rel="stylesheet" href="/assets/fans.css?v=1">
+  <link rel="stylesheet" href="/assets/funnel-guide.css?v=guide-1">
+</head>
+<body>
+<header class="topbar"><a class="brand" href="/">UCcloud</a><a class="topbar-guide" href="/guide/funnel">외부 공개 방법</a></header>
+<main>
+<section id="auth-view" class="auth-shell">
+  <div class="auth-copy"><h1>UCcloud</h1><p>팀 서버를 만들고 사용하세요.</p></div>
+  <div class="auth-panel"><div class="tabs" role="group" aria-label="계정 메뉴"><button class="tab active" type="button" data-tab="login" aria-pressed="true" aria-controls="login-form">로그인</button><button class="tab" type="button" data-tab="register" aria-pressed="false" aria-controls="register-form">가입</button></div>
+    <form id="login-form" class="form-stack"><label>아이디 또는 이메일<input name="username" maxlength="254" autocomplete="username" required></label><label>비밀번호<span class="password-entry"><input id="login-password" name="password" type="password" autocomplete="current-password" required><button type="button" data-password-toggle aria-controls="login-password" aria-label="비밀번호 보기" aria-pressed="false">보기</button></span></label><button class="primary" type="submit">로그인</button></form>
+    <form id="register-form" class="form-stack hidden"><label>이메일<input name="email" type="email" autocomplete="email" required></label><label>아이디<input name="username" minlength="3" maxlength="32" autocomplete="username" required></label><label>팀 이름<input name="team_name" minlength="2" required></label><label id="registration-code-field" class="hidden">가입 코드<input name="registration_code" maxlength="64" autocomplete="off" autocapitalize="characters" spellcheck="false"></label><label><span>비밀번호 <small>8자 이상</small></span><span class="password-entry"><input id="register-password" name="password" type="password" minlength="8" autocomplete="new-password" required><button type="button" data-password-toggle aria-controls="register-password" aria-label="비밀번호 보기" aria-pressed="false">보기</button></span></label><button class="primary" type="submit">가입하기</button></form>
+    <div class="recovery-links"><button id="find-id" type="button" class="text-button">아이디 찾기</button><button id="find-password" type="button" class="text-button">비밀번호 찾기</button></div>
+    <p id="auth-message" class="message" aria-live="polite"></p>
+  </div>
+</section>
+<section id="pending-view" class="status-page hidden"><h1 id="pending-title">준비 중</h1><p id="pending-copy">작업 공간을 준비하고 있습니다.</p><button id="retry-provision" class="primary hidden">다시 시도</button><button class="secondary" data-logout>로그아웃</button></section>
+<section id="dashboard-view" class="dashboard hidden">
+  <aside><div class="team-block"><h2 id="team-name">—</h2></div><nav aria-label="메뉴"><button class="nav-item active" data-section="instances">내 VM</button><button class="nav-item owner-only hidden" data-section="team">팀 가입 요청<span id="request-count"></span></button><button class="nav-item admin-only hidden" data-section="admin">운영 기록</button></nav><div class="account"><span id="username">—</span><button id="change-password" class="text-button" type="button">비밀번호 변경</button><button class="text-button" data-logout>로그아웃</button></div></aside>
+  <div class="workspace">
+    <section id="section-instances" class="page-section"><div class="page-head"><h1>내 VM</h1><button id="open-create" class="primary compact">새 VM</button></div><p id="quota-summary" class="quota-summary" aria-live="polite"></p><p id="cloud-status" class="cloud-status hidden" role="status" aria-live="polite"></p><div id="instances-list" class="instances-list"></div></section>
+    <section id="section-team" class="page-section hidden"><div class="page-head"><h1>팀 가입 요청</h1><button id="copy-team-invite" class="secondary" type="button">초대 링크 복사</button></div><div id="request-list" class="approval-list"></div></section>
+    <section id="section-admin" class="page-section hidden"><div class="page-head"><h1>운영 기록</h1></div><div class="admin-code-panel"><span>가입 코드</span><code id="admin-registration-code" aria-live="polite">확인 중…</code><button id="copy-registration-code" class="secondary" type="button" disabled>복사</button></div><p id="cluster-capacity" class="quota-summary" role="status" aria-live="polite"></p>
+      <section class="fan-panel" aria-labelledby="fan-title"><div class="fan-head"><h2 id="fan-title">팬 관리</h2><button id="fan-refresh" class="secondary" type="button">새로고침</button></div><p class="muted">자동 냉각을 유지하며 최소 속도만 설정합니다. 낮춰도 필요한 냉각 속도보다 느려지지는 않습니다.</p><p id="fan-feedback" role="status" aria-live="polite">새로고침하면 현재 상태가 표시됩니다.</p><div id="fan-nodes" class="fan-table-wrap"></div></section>
+      <div id="event-list" class="approval-list"></div></section>
+  </div>
+</section>
+</main>
+<dialog id="create-dialog"><form id="create-form" method="dialog">
+  <div class="dialog-head"><h2>새 VM</h2><button type="button" class="icon-button" data-close aria-label="닫기">×</button></div>
+  <label>VM 이름<input name="name" required></label>
+  <details id="create-options" class="create-options">
+    <summary><span id="create-options-label">기본 설정</span><span class="change-label">변경</span></summary>
+    <div class="create-options-fields">
+      <label>운영체제<select name="image_id" required></select></label>
+      <label>사양<select name="flavor_id" required></select><small id="flavor-disk"></small></label>
+      <label>VM 접속 ID<input name="vm_username" value="student" pattern="[a-z_][a-z0-9_-]*" minlength="2" maxlength="32" autocapitalize="none" required></label>
+    </div>
+  </details>
+  <div class="software-picker"><label for="software-select">함께 설치할 프로그램 <small>선택 사항</small></label><select id="software-select"><option value="">프로그램 선택</option></select><div id="software-list" class="software-list"></div><small id="software-hint">선택하지 않아도 VM을 만들 수 있습니다.</small></div>
+  <label><span>VM 접속 비밀번호 <small>8자 이상</small></span><span class="password-entry"><input name="vm_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><button id="vm-password-toggle" type="button" aria-label="비밀번호 보기" aria-pressed="false">보기</button></span></label>
+  <p id="create-status" class="create-status hidden" role="status" aria-live="polite"></p>
+  <button id="retry-create-setup" class="secondary hidden" type="button">다시 확인</button>
+  <button class="primary" type="submit">만들고 접속</button>
+</form></dialog>
+<dialog id="password-dialog" aria-labelledby="password-dialog-title"><form id="password-form">
+  <div class="dialog-head"><h2 id="password-dialog-title">비밀번호 변경</h2><button type="button" class="icon-button" id="close-password" aria-label="닫기">×</button></div>
+  <label>현재 비밀번호<input name="current_password" type="password" maxlength="128" autocomplete="current-password" required></label>
+  <label><span>새 비밀번호 <small>8자 이상</small></span><span class="password-entry"><input id="new-account-password" name="new_password" type="password" minlength="8" maxlength="128" autocomplete="new-password" required><button type="button" data-password-toggle aria-controls="new-account-password" aria-label="비밀번호 보기" aria-pressed="false">보기</button></span></label>
+  <p id="password-status" class="create-status hidden" role="status" aria-live="polite"></p>
+  <button class="primary" type="submit">변경하기</button>
+</form></dialog>
+<dialog id="recovery-dialog" aria-labelledby="recovery-title"><form id="recovery-form"><div class="dialog-head"><h2 id="recovery-title">아이디 찾기</h2><button id="recovery-close" type="button" class="icon-button" aria-label="닫기">×</button></div><label>가입할 때 쓴 이메일<input name="email" type="email" autocomplete="email" maxlength="254" required></label><p id="recovery-result" class="message" role="status" aria-live="polite"></p><button class="primary" type="submit">확인</button></form></dialog>
+<dialog id="backup-dialog" aria-labelledby="backup-dialog-title"><div class="backup-dialog-body">
+  <div class="dialog-head"><h2 id="backup-dialog-title">백업·복구</h2><button type="button" class="icon-button" id="close-backup" aria-label="닫기">×</button></div>
+  <p id="backup-vm-name" class="muted"></p>
+  <p id="backup-hint" class="backup-hint"></p>
+  <div id="backup-list" class="backup-list" aria-live="polite"></div>
+  <button id="backup-create" class="primary" type="button">백업 만들기</button>
+</div></dialog>
+<dialog id="site-dialog" aria-labelledby="site-dialog-title"><form id="site-form">
+  <div class="dialog-head"><h2 id="site-dialog-title">사이트 상태</h2><button type="button" class="icon-button" id="close-site" aria-label="닫기">×</button></div>
+  <p id="site-vm-name" class="muted"></p>
+  <label>공개 주소<input id="site-url" name="url" type="url" placeholder="https://내주소.ts.net" maxlength="200" autocomplete="url" required></label>
+  <p id="site-result" class="site-result" role="status" aria-live="polite">주소를 입력하고 확인해 주세요.</p>
+  <div class="site-actions"><button class="primary" type="submit">확인하기</button><a id="site-open" class="hidden" target="_blank" rel="noopener noreferrer">사이트 열기</a></div>
+</form></dialog>
+<div id="toast" class="toast" role="status" aria-live="polite"></div><script src="/assets/app.js?v=vm-access-2" defer></script><script src="/assets/fans.js?v=1" defer></script>
+</body></html>
+

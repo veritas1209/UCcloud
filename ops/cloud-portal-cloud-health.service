@@ -1,0 +1,35 @@
+[Unit]
+Description=Check UCcloud OpenStack authentication and quota
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=cloud-portal
+Group=cloud-portal
+WorkingDirectory=/opt/cloud-portal
+EnvironmentFile=/etc/cloud-portal/portal.env
+Environment=PYTHONPATH=/opt/cloud-portal
+ExecStart=/opt/cloud-portal/.venv/bin/python /opt/cloud-portal/ops/check_cloud_health.py
+TimeoutStartSec=180
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cloud-portal
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateDevices=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native

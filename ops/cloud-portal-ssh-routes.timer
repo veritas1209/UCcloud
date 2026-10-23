@@ -1,0 +1,10 @@
+[Unit]
+Description=Keep UCcloud browser SSH routes current
+
+[Timer]
+OnBootSec=30s
+OnUnitActiveSec=30s
+Unit=cloud-portal-ssh-routes.service
+
+[Install]
+WantedBy=timers.target

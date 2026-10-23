@@ -1,0 +1,11 @@
+[Unit]
+Description=Check UCcloud OpenStack health every five minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+RandomizedDelaySec=30s
+Unit=cloud-portal-cloud-health.service
+
+[Install]
+WantedBy=timers.target

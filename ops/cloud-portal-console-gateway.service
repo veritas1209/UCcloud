@@ -1,0 +1,22 @@
+[Unit]
+Description=School Cloud noVNC loopback gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=haproxy
+Group=haproxy
+ExecStart=/usr/sbin/haproxy -db -f /etc/haproxy/cloud-portal-console.cfg
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+[Unit]
+Description=Back up and verify the UCcloud portal database
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/usr/bin/python3 /opt/cloud-portal/ops/backup_portal_db.py
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+# SQLite mode=ro still needs to create WAL shared-memory sidecars.
+# Source SQL writes remain prohibited by the read-only connection.
+ReadWritePaths=/var/backups/uccloud-portal /var/lib/cloud-portal
+PrivateDevices=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native

@@ -1,0 +1,42 @@
+[Unit]
+Description=School Cloud Portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cloud-portal
+Group=cloud-portal
+WorkingDirectory=/opt/cloud-portal
+EnvironmentFile=/etc/cloud-portal/portal.env
+ExecStart=/opt/cloud-portal/.venv/bin/uvicorn backend.app:app --host ${PORTAL_BIND} --port ${PORTAL_PORT}
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cloud-portal
+UMask=0077
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateDevices=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectProc=invisible
+ProcSubset=pid
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+RemoveIPC=true
+
+[Install]
+WantedBy=multi-user.target
+

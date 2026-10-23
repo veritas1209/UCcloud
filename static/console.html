@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>VM 접속 · UCcloud</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#ffffff">
+  <link rel="icon" href="/ucconsole/brand/favicon-v1.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/ucconsole/brand/icon.svg?v=1" type="image/svg+xml" sizes="any">
+  <link rel="stylesheet" href="/ucconsole/console.css?v=2">
+</head>
+<body>
+  <header class="console-bar">
+    <a href="https://comsv-03.tail5819db.ts.net/">UCcloud</a>
+    <span id="connection-status" role="status" aria-live="polite">VM 연결 중…</span>
+    <a id="classic-console" href="#" rel="noopener noreferrer">기존 콘솔</a>
+  </header>
+  <form id="text-form" class="text-bar">
+    <label for="text-input">VM에 명령어 입력</label>
+    <input id="text-input" maxlength="500" autocomplete="off" spellcheck="false" placeholder="명령어를 여기에 붙여넣으세요">
+    <button id="send-text" type="submit" disabled>입력하고 Enter</button>
+  </form>
+  <div class="console-help">
+    <span>명령어는 위 칸에 붙여넣으세요. VM 비밀번호는 아래 화면에 직접 입력하세요.</span>
+    <button id="show-tailscale" type="button" aria-expanded="false" aria-controls="tailscale-form">Tailscale 연결</button>
+  </div>
+  <form id="tailscale-form" class="tailscale-bar" hidden>
+    <label for="tailscale-key">Tailscale 일회용 키</label>
+    <input id="tailscale-key" type="password" autocomplete="off" spellcheck="false" maxlength="256" placeholder="tskey-auth-…">
+    <button id="send-tailscale" type="submit" disabled>연결하기</button>
+    <a href="https://comsv-03.tail5819db.ts.net/guide/funnel#connect" target="_blank" rel="noopener noreferrer">키 만드는 법</a>
+  </form>
+  <div id="screen" aria-label="VM 화면"></div>
+  <script type="module" src="/ucconsole/console.js?v=2"></script>
+</body>
+</html>

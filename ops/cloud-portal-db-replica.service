@@ -1,0 +1,33 @@
+[Unit]
+Description=Copy a signed, encrypted UCcloud portal backup to comsv-01
+After=network-online.target
+Wants=network-online.target
+AssertPathExists=/etc/cloud-portal/backup-recovery.pub
+AssertPathExists=/etc/cloud-portal/backup-signing.key
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+ExecStart=/opt/cloud-portal/.venv/bin/python /opt/cloud-portal/ops/replicate_portal_backup.py
+TimeoutStartSec=8min
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/backups/uccloud-portal
+PrivateDevices=true
+ProtectClock=true
+ProtectControlGroups=true
+ProtectHostname=true
+ProtectKernelLogs=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+

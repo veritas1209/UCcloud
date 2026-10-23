@@ -1,0 +1,21 @@
+[Unit]
+Description=UCcloud off-host VM backup worker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+WorkingDirectory=/opt/cloud-portal
+EnvironmentFile=/etc/cloud-portal/portal.env
+EnvironmentFile=/etc/cloud-portal/public.env
+ExecStart=/opt/cloud-portal/.venv/bin/python -m backend.vm_backups
+TimeoutStartSec=4h
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=read-only
+ProtectSystem=strict
+ReadWritePaths=/var/lib/cloud-portal /var/lib/uccloud-vm-backups
+UMask=0077
+

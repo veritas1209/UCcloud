@@ -1,0 +1,10 @@
+[Unit]
+Description=Check UCcloud VM backup queue
+
+[Timer]
+OnBootSec=1min
+OnUnitInactiveSec=30s
+Unit=cloud-portal-vm-backup.service
+
+[Install]
+WantedBy=timers.target
