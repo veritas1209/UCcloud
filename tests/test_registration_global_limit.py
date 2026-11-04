@@ -69,8 +69,12 @@ def waiting_hash(value):
 
 
 def simultaneous_registration(number: int) -> int:
-    with TestClient(portal.app, base_url="http://localhost", client=(f"198.51.100.{number}", 50000)) as client:
+    # Do not start/stop the same app's background tasks in several event loops.
+    client = TestClient(portal.app, base_url="http://localhost", client=(f"198.51.100.{number}", 50000))
+    try:
         return client.post("/api/auth/register", json=registration(number)).status_code
+    finally:
+        client.close()
 
 
 portal.hash_password = waiting_hash

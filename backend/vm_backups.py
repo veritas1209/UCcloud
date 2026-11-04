@@ -17,7 +17,7 @@ from uuid import UUID, uuid4
 from openstack.exceptions import NotFoundException
 
 from .database import audit, db
-from .openstack_service import _owned_server, admin_connection, team_connection
+from .openstack_service import _owned_server, backup_source_host, team_connection
 
 LOG = logging.getLogger("cloud_portal.backups")
 GIB = 1024 ** 3
@@ -63,8 +63,7 @@ def _source_server(slug: str, project_id: str, server_id: str):
     server = _owned_server(team_connection(slug), server_id, project_id)
     if server.status != "SHUTOFF":
         raise BackupConflict("먼저 VM을 꺼 주세요. 꺼진 상태에서 백업하거나 복구할 수 있습니다.")
-    admin_server = _owned_server(admin_connection(), server_id, project_id)
-    host = admin_server.hypervisor_hostname
+    host = backup_source_host(slug, project_id, server_id)
     if host not in NODES:
         raise BackupConflict("VM 위치를 확인할 수 없습니다. 운영자에게 문의해 주세요.")
     return server, host

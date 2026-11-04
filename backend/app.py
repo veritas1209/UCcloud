@@ -23,7 +23,7 @@ from .software_state import completed as software_completed, forget as forget_so
 from starlette.middleware.body_limit import RequestBodyLimitMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
-from .database import audit, db, init_db
+from .database import DB_PATH, audit, db, init_db
 from .openstack_service import (
     _owned_server, cluster_capacity, create_server, delete_server, ensure_team_project, get_console_url,
     InstanceQuotaError, InstanceStateError, list_catalog, list_servers, quota, server_action,
@@ -50,6 +50,7 @@ LOGIN_IP_ATTEMPTS_PER_MINUTE = max(1, min(1000, int(os.getenv("PORTAL_LOGIN_IP_A
 REGISTRATIONS_PER_HOUR = max(1, min(10000, int(os.getenv("PORTAL_REGISTRATIONS_PER_HOUR", "1000"))))
 MAX_TEAMS = max(1, min(200, int(os.getenv("PORTAL_MAX_TEAMS", "20"))))
 VM_BACKUPS_ENABLED = os.getenv("PORTAL_VM_BACKUPS_ENABLED", "false").lower() in {"1", "true", "yes"}
+REGISTRY_KEEPALIVE = None
 REGISTRATION_CODE = os.getenv("PORTAL_REGISTRATION_CODE", "").strip().upper()
 CONSOLE_HOSTS = {host.strip() for host in os.getenv("PORTAL_CONSOLE_UPSTREAM_HOSTS", "172.141.0.231,172.29.236.11").split(",") if host.strip()}
 CONSOLE_BROWSER_ORIGIN = os.getenv("PORTAL_CONSOLE_BROWSER_ORIGIN", "http://127.0.0.1:6080")
@@ -250,6 +251,7 @@ def _backend_error(operation: str, exc: Exception):
 
 @app.on_event("startup")
 def startup():
+    global REGISTRY_KEEPALIVE
     init_db()
     username = os.getenv("PORTAL_ADMIN_USERNAME", "admin")
     password = os.getenv("PORTAL_ADMIN_PASSWORD", "")
@@ -265,6 +267,20 @@ def startup():
             )
         elif password and needs_password_rehash(existing["password_hash"]) and verify_password(password, existing["password_hash"]):
             conn.execute("UPDATE users SET password_hash=? WHERE id=?", (hash_password(password), existing["id"]))
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        # Keep WAL sidecars present so the separate broker can read a current
+        # SQLite snapshot without directory-write or SQL-write permission.
+        # No transaction is left open and checkpointing remains enabled.
+        REGISTRY_KEEPALIVE = sqlite3.connect(DB_PATH, check_same_thread=False)
+        REGISTRY_KEEPALIVE.execute("SELECT id FROM teams LIMIT 1").fetchall()
+
+
+@app.on_event("shutdown")
+def close_registry_keepalive():
+    global REGISTRY_KEEPALIVE
+    if REGISTRY_KEEPALIVE is not None:
+        REGISTRY_KEEPALIVE.close()
+        REGISTRY_KEEPALIVE = None
 
 
 @app.get("/")

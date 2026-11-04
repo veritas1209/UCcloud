@@ -1,0 +1,10 @@
+[Unit]
+Description=UCcloud Keystone pool regression and recurrence check (read-only)
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /var/lib/uccloud-keystone-pool-20261026/keystone_pool_watch_20261026.py
+UMask=0077
+TimeoutStartSec=60
+NoNewPrivileges=true

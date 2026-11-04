@@ -70,14 +70,12 @@ with TestClient(app, base_url="https://cloud.example.ts.net") as client:
     assert "og:" not in reset.text
     assert client.get("/assets/index.html").headers["x-robots-tag"] == "noindex, nofollow"
     guide = client.get("/guide/funnel")
-    assert guide.status_code == 200 and 'id="funnel-command"' in guide.text
+    assert guide.status_code == 200 and 'id="quick-publish"' in guide.text
     assert guide.headers["cache-control"] == "no-store"
     assert "UCcloud" in guide.text and "[서비스 가제]" not in guide.text
-    assert "sudo tailscale up" in guide.text
-    assert "Tailscale 로그인</b>을 누르세요" in guide.text
-    assert "https://…ts.net" in guide.text
-    assert "휴대폰으로 로그인" in guide.text
-    assert "서비스에서 사용하는 포트" in guide.text
+    assert "웹사이트 공개하기" in guide.text
+    assert "공개 끄기" in guide.text
+    assert "사이트가 사용하는 포트" in guide.text
     assert 'id="keep-running-command"' in guide.text
     assert "접속 창을 닫거나 VM을 다시 켜도 사이트가 자동으로 시작됩니다" in guide.text
     assert "비밀번호는 넣지 마세요" in guide.text

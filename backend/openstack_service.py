@@ -14,8 +14,6 @@ from openstack.exceptions import ConflictException, NotFoundException
 from .software import SOFTWARE, minimum_ram, software_files, validate_software
 
 AUTH_URL = os.getenv("OS_AUTH_URL", "")
-ADMIN_USER = os.getenv("OS_USERNAME", "")
-ADMIN_PASSWORD = os.getenv("OS_PASSWORD", "")
 SERVICE_USER = os.getenv("OS_SERVICE_USERNAME", "portal-service")
 SERVICE_PASSWORD = os.getenv("OS_SERVICE_PASSWORD", "")
 DOMAIN = os.getenv("OS_USER_DOMAIN_NAME", "Default")
@@ -66,7 +64,26 @@ def _connect(username: str, password: str, project: str) -> Connection:
 
 @lru_cache(maxsize=1)
 def admin_connection() -> Connection:
-    return _connect(ADMIN_USER, ADMIN_PASSWORD, os.getenv("OS_PROJECT_NAME", "admin"))
+    # Web workers must not obtain an administrator connection, even if a legacy
+    # environment file is accidentally loaded. Only root maintenance and the
+    # dedicated provisioning UID may use the private credentials.
+    if not hasattr(os, "geteuid"):
+        raise PermissionError("Administrator connection is not available to web workers")
+    if os.geteuid() != 0:
+        import pwd
+        try:
+            allowed_uid = pwd.getpwnam("uccloud-provisioner").pw_uid
+        except KeyError:
+            raise PermissionError("Administrator connection is not available to web workers") from None
+        if os.geteuid() != allowed_uid:
+            raise PermissionError("Administrator connection is not available to web workers")
+    return _connect(os.getenv("OS_USERNAME", ""), os.getenv("OS_PASSWORD", ""),
+                    os.getenv("OS_PROJECT_NAME", "admin"))
+
+
+def _provisioner(operation: str, **payload):
+    from .provisioner_client import request
+    return request(operation, **payload)
 
 
 @lru_cache(maxsize=64)
@@ -75,6 +92,12 @@ def team_connection(slug: str) -> Connection:
 
 
 def ensure_team_project(team_name: str, slug: str, team_index: int) -> dict[str, str]:
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        return _provisioner("ensure_team", team_id=team_index)
+    return _direct_ensure_team_project(team_name, slug, team_index)
+
+
+def _direct_ensure_team_project(team_name: str, slug: str, team_index: int) -> dict[str, str]:
     if not 1 <= team_index <= 200:
         raise ValueError("Team network pool exhausted")
     admin = admin_connection()
@@ -430,6 +453,12 @@ def delete_server(slug: str, project_id: str, server_id: str) -> None:
 
 
 def quota(project_id: str) -> dict:
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        return _provisioner("quota", project_id=project_id)
+    return _direct_quota(project_id)
+
+
+def _direct_quota(project_id: str) -> dict:
     q = admin_connection().compute.get_quota_set(project_id, usage=True)
     usage = getattr(q, "usage", None)
     if not isinstance(usage, dict):
@@ -445,6 +474,12 @@ def quota(project_id: str) -> dict:
 
 
 def cluster_capacity() -> dict:
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        return _provisioner("capacity")
+    return _direct_cluster_capacity()
+
+
+def _direct_cluster_capacity() -> dict:
     """Summarize scheduler memory available on enabled compute nodes for operators."""
     admin = admin_connection()
     nodes = list(admin.compute.hypervisors(details=True))
@@ -472,4 +507,10 @@ def cluster_capacity() -> dict:
         free_mb += max(0, int((inventory.total - inventory.reserved) * inventory.allocation_ratio) - used)
     return {"online": online, "total": len(nodes),
             "memory_free_mb": free_mb if memory_known else None}
+
+
+def backup_source_host(slug: str, project_id: str, server_id: str) -> str:
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        return _provisioner("backup_source", project_id=project_id, server_id=server_id)["host"]
+    return _owned_server(admin_connection(), server_id, project_id).hypervisor_hostname
 

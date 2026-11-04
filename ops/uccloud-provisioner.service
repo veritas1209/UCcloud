@@ -1,0 +1,40 @@
+[Unit]
+Description=UCcloud private OpenStack provisioning broker
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=uccloud-provisioner
+Group=cloud-portal
+WorkingDirectory=/opt/cloud-portal
+EnvironmentFile=/etc/cloud-portal/provisioner.env
+Environment=PYTHONPATH=/opt/cloud-portal
+ExecStart=/opt/cloud-portal/.venv/bin/python -m backend.provisioner
+RuntimeDirectory=uccloud-provisioner
+RuntimeDirectoryMode=0750
+UMask=0007
+Restart=on-failure
+RestartSec=2
+TimeoutStopSec=170
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ReadOnlyPaths=/var/lib/cloud-portal
+InaccessiblePaths=/etc/cloud-portal
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=true
+RestrictSUIDSGID=true
+LockPersonality=true
+LimitNOFILE=512
+TasksMax=32
+
+[Install]
+WantedBy=multi-user.target

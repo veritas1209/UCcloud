@@ -1,5 +1,16 @@
 # UCcloud
 
+## 소스 동기화 기준 (2026-11-04)
+
+2026-10-26 로컬 릴리즈의 관리자 권한 분리 코드와 이후 점검 도구를 반영했습니다. 이번 갱신은 GitHub 소스 동기화이며 운영 서버 재배포가 아닙니다.
+
+- OpenStack 관리자 작업은 전용 UID의 `backend.provisioner`로 분리하고 웹은 제한된 Unix 소켓 작업만 요청합니다.
+- 배포·점검: `ops/deploy_provisioner_20261026.py`, `ops/uccloud-provisioner.service`, `tests/test_provisioner.py`.
+- Keystone 연결 반환 수정과 회귀 검사: `ops/keystone_federation_pool_fix.patch`, `ops/keystone_pool_*_20261026.py`.
+- Tailscale 업데이트·접근 경계와 ACL 검증 도구: `ops/tailworm_*_20261026.py`, `ops/tailnet_acl_*_20261026.py`.
+
+프로비저너 배포 시 웹 환경에는 `PORTAL_PROVISIONER_SOCKET=/run/uccloud-provisioner/control.sock`을 설정하고, OpenStack 관리자 자격정보는 별도 root 전용 `provisioner.env`에 둡니다. 기존 `portal.env`와 서비스 파일을 그대로 쓰는 것만으로 권한 분리가 적용되지는 않습니다. 운영 도구에는 설치 경로·호스트별 설정이 있으므로 다른 환경에서 검토 없이 실행하지 마세요.
+
 학교 사설 클라우드의 포털 MVP입니다. OpenStack 2026.1 클러스터의 컨트롤러 `comsv-03`에서 실행 중입니다.
 
 새 팀 이름으로 가입하면 작업 공간이 자동 생성됩니다. 이미 있는 팀 이름을 입력하면 확인 후 팀장에게 가입 요청이 전달됩니다. 운영자는 승인하지 않고 기록만 확인합니다. 학생은 SSH 키 없이 VM 접속 ID·비밀번호를 정해 Ubuntu VM을 만들 수 있습니다. 생성 후 새 브라우저 SSH 탭에서 자동으로 연결합니다. 팝업이 차단되면 같은 탭에서 비밀번호를 다시 입력할 수 있습니다. 화면 콘솔은 SSH가 고장 났을 때 사용합니다. 팀 Quota는 VM 4개, vCPU 8개, RAM 16GB입니다. Horizon은 관리자용입니다.

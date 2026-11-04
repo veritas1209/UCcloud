@@ -6,6 +6,8 @@ import sys
 
 from backend.database import audit, db
 from backend.openstack_service import admin_connection, quota
+from backend.provisioner_client import request as provisioner_request
+import os
 
 
 FAILED = "cloud.health.failed"
@@ -24,7 +26,10 @@ def probe() -> None:
             "SELECT openstack_project_id FROM teams "
             "WHERE openstack_project_id IS NOT NULL ORDER BY id LIMIT 1"
         ).fetchone()
-    admin_connection().authorize()
+    if os.getenv("PORTAL_PROVISIONER_SOCKET"):
+        provisioner_request("health")
+    else:
+        admin_connection().authorize()
     if row:
         quota(row["openstack_project_id"])
 
