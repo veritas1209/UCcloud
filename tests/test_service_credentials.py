@@ -1,6 +1,7 @@
 """Credential validation, privacy, SQL/Compose escaping and login hints."""
 import asyncio
 import base64
+import gzip
 import json
 import tempfile
 import subprocess
@@ -28,7 +29,7 @@ for bad in [dict(id='node',version='24',username='dbuser',password=password),
     except ValueError: pass
 body = InstanceBody(name='test',image_id='d58be315-054e-49fb-bb25-14a5544adf39',flavor_id='small',vm_username='student',vm_password='vmtesting',software=items)
 assert password not in repr(body)
-config = json.loads(base64.b64decode(_vm_user_data('student','vmtesting',items)).decode().split('\n',1)[1])
+config = json.loads(gzip.decompress(base64.b64decode(_vm_user_data('student','vmtesting',items))).decode().split('\n',1)[1])
 files = {file['path']:file for file in config['write_files']}
 assert files['/etc/uccloud-service-credentials.json']['permissions'] == '0600'
 assert password not in files['/etc/uccloud-software.json']['content']

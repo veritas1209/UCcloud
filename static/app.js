@@ -802,7 +802,7 @@ $('#create-form').addEventListener('input', () => {
 async function findCreatedVm(requestId) {
   for (let attempt = 0; attempt < 24 && $('#create-dialog').open; attempt += 1) {
     try {
-      const result = await api('/api/instances');
+      const result = await api('/api/instances', {signal: AbortSignal.timeout(10000)});
       if (!$('#create-dialog').open) return null;
       const found = result.instances.find(vm => vm.request_id === requestId);
       if (found) return found;
@@ -811,6 +811,26 @@ async function findCreatedVm(requestId) {
   }
   return null;
 }
+
+function showCreateFailure(tab, message, uncertain = false) {
+  if (!tab || tab.closed) return;
+  try {
+    const doc = tab.document;
+    doc.title = `${uncertain ? 'VM 생성 확인 필요' : 'VM 생성 실패'} · UCcloud`;
+    const title = doc.createElement('h1');
+    title.textContent = uncertain ? 'VM 생성 결과를 확인해 주세요' : 'VM을 만들지 못했습니다';
+    title.style.fontSize = '22px';
+    const reason = doc.createElement('p');
+    reason.textContent = message;
+    reason.setAttribute('role', 'alert');
+    const link = doc.createElement('a');
+    link.href = `${location.origin}/`;
+    link.textContent = '내 VM 목록 확인';
+    doc.body.replaceChildren(title, reason, link);
+    tab.opener = null;
+  } catch { /* The original page still displays the same failure message. */ }
+}
+
 $('#create-form').addEventListener('submit',async event=>{
   event.preventDefault();
   const form = event.currentTarget;
@@ -830,10 +850,13 @@ $('#create-form').addEventListener('submit',async event=>{
   }
   button.disabled = true;
   button.textContent = 'VM 만드는 중…';
+  const controller = new AbortController();
+  const createTimeout = setTimeout(() => controller.abort(), 60000);
   try {
     let created;
-    try { created = await api('/api/instances',{method:'POST',body:JSON.stringify(body)}); }
+    try { created = await api('/api/instances',{method:'POST',body:JSON.stringify(body),signal:controller.signal}); }
     catch (error) {
+      clearTimeout(createTimeout);
       if (error.status != null && ![429, 500, 502, 503, 504].includes(error.status)) throw error;
       button.textContent = '생성 확인 중…';
       $('#create-status').textContent = 'VM 생성 결과를 확인하는 중입니다. 잠시 기다려 주세요.';
@@ -841,8 +864,9 @@ $('#create-form').addEventListener('submit',async event=>{
       if (tab && !tab.closed) tab.document.body.textContent = 'VM 생성 결과를 확인하는 중입니다…';
       created = await findCreatedVm(body.request_id);
       if (!created) {
-        tab?.close();
-        if ($('#create-dialog').open) $('#create-status').textContent = 'VM을 아직 확인하지 못했습니다. 내 VM 목록을 확인한 뒤 다시 시도해 주세요.';
+        const message = 'VM 생성 결과를 확인하지 못했습니다. 중복 생성을 피하려면 내 VM 목록을 먼저 확인해 주세요.';
+        showCreateFailure(tab, message, true);
+        if ($('#create-dialog').open) $('#create-status').textContent = message;
         return;
       }
     }
@@ -877,10 +901,13 @@ $('#create-form').addEventListener('submit',async event=>{
     quotaUpdatedAt = 0;
     setTimeout(() => refreshCloud(true, true),1800);
   } catch(error) {
-    tab?.close();
+    showCreateFailure(tab, error.message);
+    $('#create-status').textContent = error.message;
+    $('#create-status').classList.remove('hidden');
     pendingCreateRequestId = null;
     toast(error.message,true);
   } finally {
+    clearTimeout(createTimeout);
     body.vm_password = '';
     body.software.forEach(item => { if ('password' in item) item.password = ''; });
     button.disabled = false;

@@ -136,7 +136,8 @@ with TestClient(portal.app, base_url="http://localhost") as client:
     os.environ.pop("CREDENTIALS_DIRECTORY")
     assert client.post(f"/api/admin/users/{member_id}/approve").status_code == 404
 
-config = base64.b64decode(openstack_service._vm_user_data("student", "abcdefgh")).decode()
+import gzip
+config = gzip.decompress(base64.b64decode(openstack_service._vm_user_data("student", "abcdefgh"))).decode()
 assert config.startswith("#cloud-config\n")
 assert "abcdefgh" not in config
 cloud_config = json.loads(config.split("\n", 1)[1])

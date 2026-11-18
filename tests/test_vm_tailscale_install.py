@@ -10,7 +10,8 @@ from pathlib import Path
 from backend.openstack_service import _vm_user_data
 
 
-config_text = base64.b64decode(_vm_user_data("student", "test-password-123")).decode()
+import gzip
+config_text = gzip.decompress(base64.b64decode(_vm_user_data("student", "test-password-123"))).decode()
 config = json.loads(config_text.split("\n", 1)[1])
 files = {item["path"]: item for item in config["write_files"]}
 script = files["/usr/local/sbin/uccloud-install-tailscale"]["content"]

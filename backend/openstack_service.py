@@ -10,7 +10,8 @@ from functools import lru_cache
 from pathlib import Path
 
 from openstack.connection import Connection
-from openstack.exceptions import ConflictException, NotFoundException
+from openstack.exceptions import BadRequestException, ConflictException, NotFoundException
+from .cloud_init import encode_cloud_config
 from .software import SOFTWARE, minimum_ram, software_files, validate_software
 
 AUTH_URL = os.getenv("OS_AUTH_URL", "")
@@ -357,7 +358,7 @@ WantedBy=multi-user.target
             ["systemctl", "enable", "uccloud-software-install.service"],
             ["systemctl", "start", "--no-block", "uccloud-software-install.service"],
         ])
-    return base64.b64encode(("#cloud-config\n" + json.dumps(config)).encode()).decode()
+    return encode_cloud_config(config)
 
 
 def create_server(slug: str, project_id: str, username: str, network_id: str,
@@ -406,7 +407,14 @@ def create_server(slug: str, project_id: str, username: str, network_id: str,
     )
     if public_key:
         payload["key_name"] = _keypair(conn, username, public_key)
-    server = conn.compute.create_server(**payload)
+    try:
+        server = conn.compute.create_server(**payload)
+    except BadRequestException as exc:
+        # Nova may echo user_data, including service credentials, in this error.
+        # Send only a controlled explanation and do not log the response body.
+        if 'user_data' in str(exc):
+            raise ValueError("클라우드가 VM 초기 설정 데이터를 거절했습니다. 함께 설치할 프로그램을 줄여 다시 시도해 주세요.") from None
+        raise ValueError("클라우드가 VM 생성 설정을 거절했습니다. 운영체제와 사양을 다시 선택해 주세요.") from None
     if server.project_id and server.project_id != project_id:
         raise RuntimeError("Created instance in unexpected project")
     return _server_payload(server)

@@ -1,5 +1,6 @@
 """Preset validation and generated first-boot config, no live cloud access."""
 import base64
+import gzip
 import json
 import tempfile
 from pathlib import Path
@@ -34,7 +35,7 @@ metadata = ",".join(f"{item['id']}:{item['version']}" + (f":{item['port']}" if '
 assert _software_metadata(dict(portal_software=metadata[:255], portal_software_extra=metadata[255:])) == all_items
 assert validate_software([dict(id='postgres', version='18', port=5555)])[0]['port'] == 5555
 assert _software_metadata(dict(portal_software="untrusted")) == []
-config = json.loads(base64.b64decode(_vm_user_data("student", "testpassword", all_items)).decode().split("\n", 1)[1])
+config = json.loads(gzip.decompress(base64.b64decode(_vm_user_data("student", "testpassword", all_items))).decode().split("\n", 1)[1])
 files = {item["path"]: item for item in config["write_files"]}
 assert json.loads(files["/etc/uccloud-software.json"]["content"])["selections"] == all_items
 assert "testpassword" not in json.dumps(config)
